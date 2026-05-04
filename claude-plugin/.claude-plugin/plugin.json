@@ -1,0 +1,17 @@
+{
+  "name": "skill-builder",
+  "description": "Visual builder for creating, editing, testing, and exporting stateful automation skills.",
+  "version": "0.1.0",
+  "author": {
+    "name": "sangmandu"
+  },
+  "license": "MIT",
+  "keywords": [
+    "skill-builder",
+    "skills",
+    "workflow",
+    "automation",
+    "claude-code",
+    "codex"
+  ]
+}

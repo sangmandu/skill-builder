@@ -1,0 +1,26 @@
+{
+  "name": "sangmandu",
+  "owner": {
+    "name": "sangmandu"
+  },
+  "metadata": {
+    "description": "Visual builder for creating, editing, testing, and exporting stateful automation skills.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "skill-builder",
+      "source": "./claude-plugin",
+      "description": "Visual builder for stateful Claude Code and Codex skill workflows.",
+      "category": "productivity",
+      "tags": [
+        "skill-builder",
+        "skills",
+        "workflow",
+        "automation",
+        "claude-code",
+        "codex"
+      ]
+    }
+  ]
+}

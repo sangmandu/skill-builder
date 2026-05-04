@@ -1,0 +1,37 @@
+{
+  "name": "skill-builder",
+  "version": "0.1.0",
+  "description": "Visual builder for creating, editing, testing, and exporting stateful automation skills.",
+  "author": {
+    "name": "sangmandu"
+  },
+  "homepage": "https://github.com/sangmandu/skill-builder",
+  "repository": "https://github.com/sangmandu/skill-builder",
+  "license": "MIT",
+  "keywords": [
+    "skill-builder",
+    "skills",
+    "workflow",
+    "automation",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Skill Builder",
+    "shortDescription": "Create and edit stateful automation skills visually.",
+    "longDescription": "Skill Builder launches a local visual editor for stateful skill packages. It supports importing existing skills, editing steps and helpers, live filesystem sync, and exporting Claude Code or Codex compatible skill packages.",
+    "developerName": "sangmandu",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Open Skill Builder for this skill package.",
+      "Create a new stateful skill workflow with Skill Builder.",
+      "Import this skill into Skill Builder and inspect its workflow."
+    ],
+    "brandColor": "#6D5BD0",
+    "screenshots": []
+  }
+}
