@@ -58,20 +58,14 @@ Then ask Codex to run Skill Builder for the current project or skill package.
 
 ## First Run
 
-When there is no existing skill package, the Skill Builder skill helps the agent discover the workflow before editing files.
+When there is no existing skill package, the Skill Builder skill inspects the current project before asking broad questions. It runs the bundled discovery helper, summarizes what it found, and proposes a starter workflow from project evidence such as package scripts, source folders, tests, docs, and CI files.
 
-Checklist:
+The first-run authoring session does not start a generated workflow runtime:
 
-- What kind of work do you repeat most often?
-- What user request usually starts it?
-- Which steps happen almost every time?
-- Where should the agent involve the user?
-- What waits on CI, reviews, long jobs, external systems, or sub-agents?
-- What documents should be produced every run?
-- What state needs to carry between steps?
-- Which repeated commands should become scripts?
-- Do you need multiple tracks like `feature`, `fix`, `light`, or `research`?
-- What proves the workflow is done?
+- No generated `run.sh init`
+- No `.workflow/state.json`
+- No generated hook invocation
+- No stop guard or user prompt hook for Skill Builder itself
 
 The first draft can be created visually from a preset or conversationally by asking the agent to add, remove, reorder, or rewrite steps.
 
@@ -97,6 +91,7 @@ Skill Builder is itself a skill. The editor files live inside the skill folder:
 plugin-src/skills/skill-builder/
   SKILL.md
   scripts/open-builder.sh
+  scripts/discover-workflow.sh
   app/
 ```
 
@@ -120,9 +115,12 @@ plugins/skill-builder/                 # Codex plugin bundle
 npm run lint
 npm run build
 npm run test:scenarios
+npm run test:e2e:clean-cli
 npm run sync:plugins
 npm run validate:plugins
 ```
+
+`test:e2e:clean-cli` runs in Docker with a clean HOME, installs Claude Code and Codex CLIs, adds this repo as a local marketplace, installs the Skill Builder plugin, launches the bundled editor, imports a sample project, exports a generated skill, starts that generated skill runtime, and verifies hook ownership isolation.
 
 Optional Codex marketplace validation:
 

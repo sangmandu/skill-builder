@@ -1161,6 +1161,8 @@ This file lives at \`<SKILL_DIR>/SKILL.md\`. When this skill is activated, note 
 
 Run workflow commands from the user's current working directory. Do not \`cd\` into \`SKILL_DIR\`; call \`run.sh\` through its absolute skill path so workflow state is created in the user's workspace.
 
+Do not call hook scripts directly. Runtime hooks are inert until this generated skill owns a running workflow state.
+
 Start the workflow with:
 
 \`\`\`bash
@@ -1187,6 +1189,8 @@ Use this Claude Code skill as a thin entrypoint for a stateful automation workfl
 This file lives at \`<SKILL_DIR>/SKILL.md\`. When this skill is activated, note the directory that contains this file and use it as \`SKILL_DIR\`.
 
 Run workflow commands from the user's current working directory. Do not \`cd\` into \`SKILL_DIR\`; call \`run.sh\` through its absolute skill path so workflow state is created in the user's workspace.
+
+Do not call hook scripts directly. Runtime hooks are inert until this generated skill owns a running workflow state.
 
 Start the workflow with:
 

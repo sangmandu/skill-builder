@@ -399,9 +399,11 @@ TRACK="\${1:-default}"
 TASK="\${2:-}"
 STATE_DIR=".workflow"
 STATE_FILE="$STATE_DIR/state.json"
+OWNER_SESSION_ID="\${SKILL_WORKFLOW_SESSION_ID:-\${CLAUDE_SESSION_ID:-\${CODEX_SESSION_ID:-}}}"
+OWNER_TRANSCRIPT_PATH="\${SKILL_WORKFLOW_TRANSCRIPT_PATH:-\${CLAUDE_TRANSCRIPT_PATH:-\${CODEX_TRANSCRIPT_PATH:-}}}"
 mkdir -p "$STATE_DIR"
 
-python3 - "$SKILL_DIR" "$TRACK" "$TASK" "$STATE_FILE" <<'PY'
+python3 - "$SKILL_DIR" "$TRACK" "$TASK" "$STATE_FILE" "$OWNER_SESSION_ID" "$OWNER_TRANSCRIPT_PATH" "$WORKTREE" <<'PY'
 import json
 import pathlib
 import sys
@@ -412,6 +414,9 @@ skill_dir = pathlib.Path(sys.argv[1])
 track = sys.argv[2]
 task = sys.argv[3]
 state_file = pathlib.Path(sys.argv[4])
+owner_session_id = sys.argv[5]
+owner_transcript_path = sys.argv[6]
+owner_cwd = sys.argv[7]
 
 track_steps = json.loads((skill_dir / "track-steps.json").read_text())
 steps = track_steps.get(track)
@@ -429,6 +434,10 @@ state = {
         "interrupted": False,
         "interrupt_reason": "",
         "task_description": task,
+        "owner_session_id": owner_session_id,
+        "owner_transcript_path": owner_transcript_path,
+        "owner_cwd": owner_cwd,
+        "hook_claim_policy": "claim_on_first_hook",
         "created_at": now,
         "updated_at": now,
         "steps": [
@@ -671,22 +680,54 @@ PY
 
 function generateFindHookStatePy(): string {
   return `#!/usr/bin/env python3
+import json
 import pathlib
 import sys
 
-start = pathlib.Path.cwd().resolve()
-for directory in [start, *start.parents]:
-    candidate = directory / ".workflow" / "state.json"
-    if candidate.exists():
-        print(candidate)
-        raise SystemExit(0)
+raw = sys.stdin.read()
+try:
+    payload = json.loads(raw or "{}")
+except Exception:
+    payload = {}
 
-stdin = sys.stdin.read()
-for token in stdin.replace('"', ' ').replace("'", " ").split():
-    candidate = pathlib.Path(token)
-    if candidate.name == "state.json" and candidate.exists():
-        print(candidate)
-        raise SystemExit(0)
+session_id = str(payload.get("session_id") or "")
+transcript_path = str(payload.get("transcript_path") or "")
+hook_cwd = pathlib.Path(str(payload.get("cwd") or pathlib.Path.cwd())).expanduser().resolve()
+
+def candidate_roots():
+    yielded = set()
+    for start in [hook_cwd, pathlib.Path.cwd().resolve()]:
+        for directory in [start, *start.parents]:
+            if directory in yielded:
+                continue
+            yielded.add(directory)
+            yield directory
+
+for directory in candidate_roots():
+    candidate = directory / ".workflow" / "state.json"
+    if not candidate.exists():
+        continue
+    try:
+        state = json.loads(candidate.read_text())
+    except Exception:
+        continue
+    control = state.get("control") if isinstance(state, dict) else None
+    if not isinstance(control, dict):
+        continue
+    if control.get("status") not in {"running", "interrupted", "completed"}:
+        continue
+    owner_session_id = str(control.get("owner_session_id") or "")
+    if owner_session_id and session_id and owner_session_id != session_id:
+        continue
+    if owner_session_id and not session_id:
+        continue
+    if not owner_session_id and session_id and control.get("hook_claim_policy") == "claim_on_first_hook":
+        control["owner_session_id"] = session_id
+        control["owner_transcript_path"] = transcript_path
+        control["owner_cwd"] = str(hook_cwd)
+        candidate.write_text(json.dumps(state, indent=2) + "\\n")
+    print(candidate)
+    raise SystemExit(0)
 `;
 }
 

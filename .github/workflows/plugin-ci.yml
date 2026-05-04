@@ -20,3 +20,11 @@ jobs:
       - run: npm run test:scenarios
       - run: npm run sync:plugins
       - run: npm run validate:plugins
+  clean-cli-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - run: npm run test:e2e:clean-cli

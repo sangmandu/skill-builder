@@ -19,6 +19,8 @@ copy_dir() {
 copy_dir plugin-src/skills claude-plugin/skills
 copy_dir plugin-src/skills plugins/skill-builder/skills
 chmod +x claude-plugin/skills/skill-builder/scripts/open-builder.sh
+chmod +x claude-plugin/skills/skill-builder/scripts/discover-workflow.sh
 chmod +x plugins/skill-builder/skills/skill-builder/scripts/open-builder.sh
+chmod +x plugins/skill-builder/skills/skill-builder/scripts/discover-workflow.sh
 
 echo "Synced Skill Builder plugin targets"

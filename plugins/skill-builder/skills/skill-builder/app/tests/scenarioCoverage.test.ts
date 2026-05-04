@@ -257,6 +257,7 @@ function testLegacyWfImportCompatibility() {
 function testGeneratedRuntimeFixture() {
   const targetDir = fs.mkdtempSync(path.join(os.tmpdir(), 'skill-builder-test-runtime-'));
   const worktree = fs.mkdtempSync(path.join(os.tmpdir(), 'skill-builder-test-worktree-'));
+  const otherWorktree = fs.mkdtempSync(path.join(os.tmpdir(), 'skill-builder-other-worktree-'));
   const config: WorkflowConfig = {
     name: 'runtime-fixture',
     description: 'Runtime fixture',
@@ -315,16 +316,27 @@ function testGeneratedRuntimeFixture() {
     stateSchema: project.workflow.stateSchema,
     graph: project.workflow.graph,
   });
+  const preInitHook = spawnSync('bash', [path.join(targetDir, 'stop-guard.sh')], { cwd: worktree, input: hookInput('session-a', worktree), encoding: 'utf-8' });
+  assert.equal(preInitHook.status, 0);
+  assert.equal(preInitHook.stdout.trim(), '');
   run(targetDir, worktree, ['init', 'default', 'task']);
-  const guardBlock = spawnSync('bash', [path.join(targetDir, 'stop-guard.sh')], { cwd: worktree, input: '{}', encoding: 'utf-8' });
+  const guardBlock = spawnSync('bash', [path.join(targetDir, 'stop-guard.sh')], { cwd: worktree, input: hookInput('session-a', worktree), encoding: 'utf-8' });
   assert.ok(guardBlock.stdout.includes('"decision": "block"'));
+  let state = JSON.parse(fs.readFileSync(path.join(worktree, '.workflow/state.json'), 'utf-8'));
+  assert.equal(state.control.owner_session_id, 'session-a');
+  const otherSession = spawnSync('bash', [path.join(targetDir, 'stop-guard.sh')], { cwd: worktree, input: hookInput('session-b', worktree), encoding: 'utf-8' });
+  assert.equal(otherSession.status, 0);
+  assert.equal(otherSession.stdout.trim(), '');
+  const otherCwd = spawnSync('bash', [path.join(targetDir, 'stop-guard.sh')], { cwd: otherWorktree, input: hookInput('session-a', otherWorktree), encoding: 'utf-8' });
+  assert.equal(otherCwd.status, 0);
+  assert.equal(otherCwd.stdout.trim(), '');
   run(targetDir, worktree, ['complete', 'SETUP']);
-  const guardAllow = spawnSync('bash', [path.join(targetDir, 'stop-guard.sh')], { cwd: worktree, input: '{}', encoding: 'utf-8' });
+  const guardAllow = spawnSync('bash', [path.join(targetDir, 'stop-guard.sh')], { cwd: worktree, input: hookInput('session-a', worktree), encoding: 'utf-8' });
   assert.equal(guardAllow.status, 0);
   assert.equal(guardAllow.stdout.trim(), '');
-  let state = JSON.parse(fs.readFileSync(path.join(worktree, '.workflow/state.json'), 'utf-8'));
+  state = JSON.parse(fs.readFileSync(path.join(worktree, '.workflow/state.json'), 'utf-8'));
   assert.equal(state.control.interrupted, false);
-  const promptHook = spawnSync('bash', [path.join(targetDir, 'user-interrupt.sh')], { cwd: worktree, input: '{}', encoding: 'utf-8' });
+  const promptHook = spawnSync('bash', [path.join(targetDir, 'user-interrupt.sh')], { cwd: worktree, input: hookInput('session-a', worktree), encoding: 'utf-8' });
   assert.equal(promptHook.status, 0);
   assert.ok(promptHook.stdout.includes('UserPromptSubmit'));
   state = JSON.parse(fs.readFileSync(path.join(worktree, '.workflow/state.json'), 'utf-8'));
@@ -341,6 +353,14 @@ function run(skillDir: string, cwd: string, args: string[]) {
   const result = spawnSync('bash', [path.join(skillDir, 'run.sh'), ...args], { cwd, encoding: 'utf-8' });
   assert.equal(result.status, 0, `${args.join(' ')} failed\n${result.stdout}\n${result.stderr}`);
   return result.stdout;
+}
+
+function hookInput(sessionId: string, cwd: string): string {
+  return JSON.stringify({
+    session_id: sessionId,
+    transcript_path: path.join(cwd, `${sessionId}.jsonl`),
+    cwd,
+  });
 }
 
 testScenarioCoverageMap();
