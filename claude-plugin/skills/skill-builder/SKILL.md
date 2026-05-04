@@ -28,6 +28,37 @@ The user can change the skill visually in the builder or by giving natural-langu
 
 When the user asks to open the builder, launch the bundled app. When the user describes a change in chat, edit the skill package files directly and keep the visual model consistent.
 
+## First Run Discovery Guide
+
+When the user runs Skill Builder without an existing skill package or asks what to build, guide them through workflow discovery before changing files. Keep the conversation concrete and short. The goal is to identify one repeatable automation workflow that can become a stateful skill.
+
+Use this checklist:
+
+- Work type: What kind of work do you repeat most often? Examples: feature delivery, bug fix, research, experiment, content writing, customer response, release checklist.
+- Trigger: What user request usually starts this workflow? Capture 2-3 real phrases the user would type.
+- Repeated steps: Which parts happen almost every time? Turn each into a candidate step.
+- Decision points: Where does the agent need human input, review, approval, or clarification?
+- Background waits: Which steps wait on CI, reviews, long-running jobs, external systems, or sub-agents?
+- Documentation output: What should be written down every run? Examples: plan, test plan, decision record, implementation summary, verification log, PR notes.
+- State data: What facts must carry from one step to the next? Examples: task scope, plan summary, test command, ticket id, PR URL, review verdict.
+- Scripts: Which repeated commands should become fixed scripts? Separate user workflow scripts from Skill Builder platform utilities.
+- Tracks: Are there variants such as full, light, fix, research, or emergency paths?
+- Done condition: What proves the workflow is complete?
+
+If the user wants recommendations, propose a starter workflow in this shape:
+
+```text
+Specify -> Plan -> Explain Plan -> Implement -> Self Review -> Test -> Commit
+```
+
+For heavier engineering work, suggest:
+
+```text
+Specify -> Plan -> Debate Plan -> Explain Plan -> Setup Test -> Explain Test -> Implement -> Self Review -> Test -> Commit
+```
+
+Only ask for missing information that materially changes the workflow. If the user provides enough context, create the first draft and tell them they can refine it visually or by chat.
+
 For conversational edits:
 
 - Resolve the active skill package root from the user's path, the current working directory, or the builder URL `rootDir`.
