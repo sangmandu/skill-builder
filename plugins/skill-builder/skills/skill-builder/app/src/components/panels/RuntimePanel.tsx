@@ -25,7 +25,7 @@ export function RuntimePanel({ store }: RuntimePanelProps) {
       <div>
         <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Runtime</h3>
         <p className="text-[10px] text-gray-500 mt-1">
-          Runtime profiles define state commands and platform assets.
+          Runtime profiles define state commands and skill-bundled assets.
         </p>
       </div>
 

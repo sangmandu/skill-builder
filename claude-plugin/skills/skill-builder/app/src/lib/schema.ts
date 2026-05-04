@@ -774,7 +774,7 @@ export function validateWorkflowConfig(
         id: `platform-runtime-owner-${asset.path}`,
         severity: 'warning',
         category: 'ownership',
-        message: `${asset.path} is platform runtime but owner is ${asset.owner}.`,
+        message: `${asset.path} is a Skill Builder runtime file but owner is ${asset.owner}.`,
         path: asset.path,
       });
     }
@@ -783,7 +783,7 @@ export function validateWorkflowConfig(
         id: `workflow-utility-owner-${asset.path}`,
         severity: 'warning',
         category: 'ownership',
-        message: `${asset.path} is a workflow utility and should not be platform-owned.`,
+        message: `${asset.path} is a workflow utility and should not be owned by the Skill Builder runtime.`,
         path: asset.path,
       });
     }

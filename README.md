@@ -1,7 +1,7 @@
 <h1 align="center">Skill Builder</h1>
 
 <p align="center">
-  A skill-hosted visual builder for turning repeatable agent work into documented, stateful automation workflows.
+  A Claude Code/Codex skill that opens a local visual editor for turning repeatable agent work into documented, stateful automation workflows.
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 Most useful agent workflows start as loose chat habits: clarify the task, write a plan, run a review, test, summarize, commit. Skill Builder turns those repeated habits into a real skill package with step files, helpers, tracks, runtime state, scripts, and export metadata for Claude Code or Codex.
 
-The user does not host the builder manually. After plugin installation, the agent harness reads the `skill-builder` skill, runs its bundled launcher, and hosts the local UI from inside the skill package.
+Skill Builder is not a standalone platform, SaaS product, or separately hosted app. The user installs a plugin and runs a skill. That skill contains the launcher and UI files, so the agent harness reads the `skill-builder` skill, runs its bundled launcher, and opens the local editor from inside the skill package.
 
 ## Install
 
@@ -54,11 +54,11 @@ If Claude Code is already running, reload plugins before invoking the skill:
 codex plugin marketplace add https://github.com/sangmandu/skill-builder
 ```
 
-Then ask Codex to open Skill Builder for the current project or skill package.
+Then ask Codex to run Skill Builder for the current project or skill package.
 
 ## First Run
 
-When there is no existing skill package, Skill Builder starts by helping the agent discover the workflow before editing files.
+When there is no existing skill package, the Skill Builder skill helps the agent discover the workflow before editing files.
 
 Checklist:
 
@@ -91,7 +91,7 @@ The first draft can be created visually from a preset or conversationally by ask
 
 ## How It Works
 
-Skill Builder is itself a skill. The app lives inside the skill folder:
+Skill Builder is itself a skill. The editor files live inside the skill folder:
 
 ```text
 plugin-src/skills/skill-builder/
@@ -109,7 +109,7 @@ plugins/skill-builder/                 # Codex plugin bundle
 .agents/plugins/                       # Codex marketplace metadata
 ```
 
-`plugin-src/skills/skill-builder/` is the source of truth. `npm run sync:plugins` copies that skill, including its bundled `app/`, into both runtime-specific plugin bundles.
+`plugin-src/skills/skill-builder/` is the source of truth. `npm run sync:plugins` copies that skill, including its bundled editor files, into both runtime-specific plugin bundles.
 
 <details>
 <summary>Maintainer Notes</summary>

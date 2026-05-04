@@ -261,7 +261,7 @@ function recommendationLabel(recommendation: string): string {
     return 'Recommended: preserve the filesystem version because this is user-owned work.';
   }
   if (recommendation === 'regenerate_platform') {
-    return 'Recommended: regenerate from the platform runtime profile if the UI version is intended.';
+    return 'Recommended: regenerate from the skill runtime profile if the UI version is intended.';
   }
   return 'Recommended: review both versions before choosing a winner.';
 }

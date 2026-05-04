@@ -8,7 +8,7 @@ interface AssetPanelProps {
 }
 
 const ROLE_OPTIONS: Array<{ role: AssetRole; label: string; icon: typeof Package; color: string }> = [
-  { role: 'platform_runtime', label: 'Platform Runtime', icon: LockKeyhole, color: 'text-rose-500' },
+  { role: 'platform_runtime', label: 'Skill Runtime', icon: LockKeyhole, color: 'text-rose-500' },
   { role: 'workflow_utility', label: 'Workflow Utility', icon: Wrench, color: 'text-sky-500' },
   { role: 'user_script', label: 'User Script', icon: FileCode2, color: 'text-emerald-500' },
   { role: 'workflow_content', label: 'Workflow Content', icon: ScrollText, color: 'text-violet-500' },
@@ -17,6 +17,11 @@ const ROLE_OPTIONS: Array<{ role: AssetRole; label: string; icon: typeof Package
 ];
 
 const ROLE_LABELS = new Map(ROLE_OPTIONS.map(option => [option.role, option.label]));
+const OWNER_LABELS = new Map([
+  ['platform', 'skill runtime'],
+  ['template', 'template'],
+  ['user', 'user'],
+]);
 
 export function AssetPanel({ store }: AssetPanelProps) {
   const [activeRole, setActiveRole] = useState<AssetRole | 'all'>('all');
@@ -40,7 +45,7 @@ export function AssetPanel({ store }: AssetPanelProps) {
       <div>
         <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Assets</h3>
         <p className="text-[10px] text-gray-500 mt-1">
-          Roles control runtime ownership and overwrite behavior.
+          Roles control skill runtime ownership and overwrite behavior.
         </p>
       </div>
 
@@ -110,7 +115,7 @@ function AssetItem({
           <div className="text-[11px] font-mono truncate" title={asset.path}>{asset.path}</div>
           <div className="mt-1 flex flex-wrap gap-1">
             <span className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-[10px] text-gray-500">
-              {asset.owner}
+              {OWNER_LABELS.get(asset.owner) ?? asset.owner}
             </span>
             <span className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-[10px] text-gray-500">
               {asset.overwritePolicy}
