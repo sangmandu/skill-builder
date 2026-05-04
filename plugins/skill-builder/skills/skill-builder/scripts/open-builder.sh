@@ -2,8 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLUGIN_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
-APP_ROOT="$PLUGIN_ROOT/app"
+SKILL_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+APP_ROOT="$SKILL_ROOT/app"
 ACTIVE_ROOT="${1:-${SKILL_BUILDER_PROJECT_ROOT:-$PWD}}"
 CLIENT_PORT="${SKILL_BUILDER_CLIENT_PORT:-3847}"
 SERVER_PORT="${SKILL_BUILDER_SERVER_PORT:-3848}"

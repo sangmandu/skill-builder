@@ -4,6 +4,8 @@ Skill Builder is a visual editor for stateful automation skills. It lets you mod
 
 The product goal is to make automation workflows easier to create than hand-writing a growing set of `SKILL.md`, step files, helper files, shell scripts, and state transition utilities.
 
+The user does not host the builder manually. After plugin installation, the agent harness reads the `skill-builder` skill, runs its bundled launcher, and hosts the local UI from inside the skill package.
+
 ## What It Builds
 
 - Thin `SKILL.md` entrypoints for lazy loading
@@ -38,16 +40,16 @@ http://localhost:3847/?rootDir=/path/to/skill
 This repository ships dual plugin targets because Claude Code and Codex use different manifest conventions.
 
 ```text
-plugin-src/                # source skill files shared by both plugin targets
-claude-plugin/             # Claude Code plugin bundle
-plugins/skill-builder/     # Codex plugin bundle
-.claude-plugin/            # Claude marketplace metadata
-.agents/plugins/           # Codex marketplace metadata
-scripts/sync-targets.sh    # regenerate plugin bundles from source
+plugin-src/skills/skill-builder/        # source skill, launcher, and bundled app
+claude-plugin/                          # Claude Code plugin bundle
+plugins/skill-builder/                  # Codex plugin bundle
+.claude-plugin/                         # Claude marketplace metadata
+.agents/plugins/                        # Codex marketplace metadata
+scripts/sync-targets.sh                 # regenerate plugin bundles from source
 scripts/validate-dual-targets.sh
 ```
 
-The duplicated target bundles are intentional and committed so `plugin marketplace add` can install directly from the repository. `plugin-src/` and the app source are the source of truth; `npm run sync:plugins` copies them into each runtime-specific bundle.
+The duplicated target bundles are intentional and committed so `plugin marketplace add` can install directly from the repository. `plugin-src/skills/skill-builder/` is the source of truth; `npm run sync:plugins` copies that skill, including its `app/` directory, into each runtime-specific bundle.
 
 ## Claude Code Plugin
 
@@ -63,7 +65,7 @@ Then invoke:
 /skill-builder:skill-builder
 ```
 
-The plugin starts the local app from the bundled `app/` directory and opens the builder for the current working directory.
+The plugin starts the local app from `claude-plugin/skills/skill-builder/app/` and opens the builder for the current working directory.
 
 ## Codex Plugin
 
@@ -85,6 +87,8 @@ The bundled skill is:
 plugins/skill-builder/skills/skill-builder/SKILL.md
 ```
 
+The Codex plugin starts the same bundled skill app from `plugins/skill-builder/skills/skill-builder/app/`.
+
 ## Validation
 
 ```bash
@@ -103,7 +107,7 @@ SKILL_BUILDER_VALIDATE_CODEX_MARKETPLACE=1 npm run validate:plugins
 
 ## Design
 
-See [DESIGN.md](./DESIGN.md) for the visual design tokens and UI rules.
+See [DESIGN.md](./plugin-src/skills/skill-builder/app/DESIGN.md) for the visual design tokens and UI rules.
 
 ## References
 

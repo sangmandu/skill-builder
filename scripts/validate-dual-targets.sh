@@ -15,19 +15,20 @@ require_file() {
 require_file .claude-plugin/marketplace.json
 require_file claude-plugin/.claude-plugin/plugin.json
 require_file claude-plugin/skills/skill-builder/SKILL.md
-require_file claude-plugin/app/package.json
+require_file claude-plugin/skills/skill-builder/app/package.json
 require_file .agents/plugins/marketplace.json
 require_file plugins/skill-builder/.codex-plugin/plugin.json
 require_file plugins/skill-builder/skills/skill-builder/SKILL.md
-require_file plugins/skill-builder/app/package.json
+require_file plugins/skill-builder/skills/skill-builder/app/package.json
 
-APP_VERSION="$(jq -r '.version' package.json)"
+ROOT_VERSION="$(jq -r '.version' package.json)"
+APP_VERSION="$(jq -r '.version' plugin-src/skills/skill-builder/app/package.json)"
 CLAUDE_VERSION="$(jq -r '.version' claude-plugin/.claude-plugin/plugin.json)"
 CLAUDE_MARKET_VERSION="$(jq -r '.metadata.version' .claude-plugin/marketplace.json)"
 CODEX_VERSION="$(jq -r '.version' plugins/skill-builder/.codex-plugin/plugin.json)"
 
-if [ "$APP_VERSION" != "$CLAUDE_VERSION" ] || [ "$APP_VERSION" != "$CLAUDE_MARKET_VERSION" ] || [ "$APP_VERSION" != "$CODEX_VERSION" ]; then
-  echo "Version mismatch: app=$APP_VERSION claude=$CLAUDE_VERSION marketplace=$CLAUDE_MARKET_VERSION codex=$CODEX_VERSION" >&2
+if [ "$ROOT_VERSION" != "$APP_VERSION" ] || [ "$APP_VERSION" != "$CLAUDE_VERSION" ] || [ "$APP_VERSION" != "$CLAUDE_MARKET_VERSION" ] || [ "$APP_VERSION" != "$CODEX_VERSION" ]; then
+  echo "Version mismatch: root=$ROOT_VERSION app=$APP_VERSION claude=$CLAUDE_VERSION marketplace=$CLAUDE_MARKET_VERSION codex=$CODEX_VERSION" >&2
   exit 1
 fi
 
@@ -38,15 +39,8 @@ jq empty plugins/skill-builder/.codex-plugin/plugin.json
 jq -e '.plugins[] | select(.name == "skill-builder" and .source == "./claude-plugin")' .claude-plugin/marketplace.json >/dev/null
 jq -e '.plugins[] | select(.name == "skill-builder" and .source.path == "./plugins/skill-builder")' .agents/plugins/marketplace.json >/dev/null
 
-diff -qr -x .DS_Store plugin-src/skills claude-plugin/skills >/dev/null
-diff -qr -x .DS_Store plugin-src/skills plugins/skill-builder/skills >/dev/null
-
-for target in claude-plugin/app plugins/skill-builder/app; do
-  diff -q package.json "$target/package.json" >/dev/null
-  diff -q package-lock.json "$target/package-lock.json" >/dev/null
-  diff -qr -x .DS_Store src "$target/src" >/dev/null
-  diff -qr -x .DS_Store public "$target/public" >/dev/null
-done
+diff -qr -x .DS_Store -x node_modules -x dist -x .skill-builder-server.log plugin-src/skills claude-plugin/skills >/dev/null
+diff -qr -x .DS_Store -x node_modules -x dist -x .skill-builder-server.log plugin-src/skills plugins/skill-builder/skills >/dev/null
 
 if command -v claude >/dev/null 2>&1; then
   claude plugin validate claude-plugin

@@ -14,10 +14,8 @@ dist-ssr
 .tmp
 .workflow
 .skill-builder-server.log
-claude-plugin/app/node_modules
-claude-plugin/app/dist
-plugins/*/app/node_modules
-plugins/*/app/dist
+**/app/node_modules
+**/app/dist
 
 # Editor directories and files
 .vscode/*

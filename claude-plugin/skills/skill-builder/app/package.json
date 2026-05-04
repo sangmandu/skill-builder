@@ -1,6 +1,6 @@
 {
-  "name": "skill-builder",
-  "private": false,
+  "name": "skill-builder-app",
+  "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -10,9 +10,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test:scenarios": "tsx tests/scenarioCoverage.test.ts",
-    "preview": "vite preview",
-    "sync:plugins": "bash scripts/sync-targets.sh",
-    "validate:plugins": "bash scripts/validate-dual-targets.sh"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@xyflow/react": "^12.10.2",

@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Skill Builder",
     "shortDescription": "Create and edit stateful automation skills visually.",
-    "longDescription": "Skill Builder launches a local visual editor for stateful skill packages. It supports importing existing skills, editing steps and helpers, live filesystem sync, and exporting Claude Code or Codex compatible skill packages.",
+    "longDescription": "Skill Builder is a skill-hosted visual and conversational editor for stateful skill packages. After plugin installation, the agent harness reads the skill, launches the bundled local app, and can also apply natural-language edit requests directly to the skill filesystem. It supports importing existing skills, editing steps and helpers, live filesystem sync, and exporting Claude Code or Codex compatible skill packages.",
     "developerName": "sangmandu",
     "category": "Coding",
     "capabilities": [

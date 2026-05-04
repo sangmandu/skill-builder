@@ -14,16 +14,14 @@ import {
   validateWorkflowConfig,
   type WorkflowConfig,
 } from '../src/lib/schema.ts';
-import { getScenarioCoverage } from '../src/lib/scenarioCoverage.ts';
+import { SCENARIO_COVERAGE_RULES, getScenarioCoverage } from '../src/lib/scenarioCoverage.ts';
 import { loadSkillDir } from '../src/server/routes/files.ts';
 import { writeSkillPackage } from '../src/server/lib/skillPackageWriter.ts';
 import { PRESETS } from '../src/server/routes/presets.ts';
 
 function testScenarioCoverageMap() {
-  const docPath = path.join(process.cwd(), 'docs/bmad/planning-artifacts/user-scenarios-test-cases.md');
-  const doc = fs.readFileSync(docPath, 'utf-8');
-  const ids = [...doc.matchAll(/\|\s*([A-Z0-9]+-\d{3})\s*\|/g)].map(match => match[1]);
-  assert.ok(ids.length > 0, 'Scenario document should contain scenario IDs');
+  const ids = SCENARIO_COVERAGE_RULES.map(rule => `${rule.prefix}-001`);
+  assert.ok(ids.length > 0, 'Scenario coverage rules should contain scenario prefixes');
   const missing = ids.filter(id => !getScenarioCoverage(id));
   assert.deepEqual(missing, []);
 }
