@@ -23,15 +23,32 @@ The user does not host the builder manually. After plugin installation, the agen
 
 ## Install
 
-Claude Code:
+### Claude Code
+
+Claude Code uses a two-step marketplace flow: add the marketplace, then install the plugin from it.
+
+From your terminal:
+
+```bash
+claude plugin marketplace add sangmandu/skill-builder
+claude plugin install skill-builder@sangmandu
+```
+
+Inside Claude Code, the equivalent slash commands are:
 
 ```text
 /plugin marketplace add sangmandu/skill-builder
-/plugin install skill-builder
+/plugin install skill-builder@sangmandu
+```
+
+If Claude Code is already running, reload plugins before invoking the skill:
+
+```text
+/reload-plugins
 /skill-builder:skill-builder
 ```
 
-Codex:
+### Codex
 
 ```bash
 codex plugin marketplace add https://github.com/sangmandu/skill-builder
@@ -94,26 +111,10 @@ plugins/skill-builder/                 # Codex plugin bundle
 
 `plugin-src/skills/skill-builder/` is the source of truth. `npm run sync:plugins` copies that skill, including its bundled `app/`, into both runtime-specific plugin bundles.
 
-## Local Development
+<details>
+<summary>Maintainer Notes</summary>
 
-```bash
-npm install
-npm run dev
-```
-
-Open:
-
-```text
-http://localhost:3847
-```
-
-Import an existing generated skill with:
-
-```text
-http://localhost:3847/?rootDir=/path/to/skill
-```
-
-## Validation
+### Validation
 
 ```bash
 npm run lint
@@ -129,13 +130,17 @@ Optional Codex marketplace validation:
 SKILL_BUILDER_VALIDATE_CODEX_MARKETPLACE=1 npm run validate:plugins
 ```
 
-## Design
+### Design
 
 See [DESIGN.md](./plugin-src/skills/skill-builder/app/DESIGN.md) for visual design tokens and UI rules.
+
+</details>
 
 ## References
 
 - Claude Code plugin docs: https://code.claude.com/docs/en/plugins
+- Claude Code marketplace docs: https://code.claude.com/docs/en/discover-plugins
+- Claude Code plugin CLI reference: https://code.claude.com/docs/en/plugins-reference
 - Claude HUD README pattern: https://github.com/jarrodwatts/claude-hud
 - Awesome README examples: https://github.com/matiassingers/awesome-readme
 - OpenAI plugin examples: https://github.com/openai/plugins
