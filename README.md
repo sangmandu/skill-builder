@@ -58,7 +58,13 @@ Then ask Codex to run Skill Builder for the current project or skill package.
 
 ## First Run
 
-When there is no existing skill package, the Skill Builder skill inspects the current project before asking broad questions. It runs the bundled discovery helper, summarizes what it found, and proposes a starter workflow from project evidence such as package scripts, source folders, tests, docs, and CI files.
+When there is no existing skill package, Skill Builder does not open the UI immediately. The skill first asks how the user wants to author the workflow:
+
+1. Let the agent analyze the repo and draft a workflow quickly, with lower accuracy.
+2. Ping-pong with the agent to co-author the draft more slowly, with higher accuracy.
+3. Open the visual builder directly and build manually.
+
+For the first two paths, the agent creates the draft first and opens the visual builder afterward. For the direct path, the visual builder opens immediately.
 
 The first-run authoring session does not start a generated workflow runtime:
 
@@ -120,7 +126,7 @@ npm run sync:plugins
 npm run validate:plugins
 ```
 
-`test:e2e:clean-cli` runs in Docker with a clean HOME, installs Claude Code and Codex CLIs, adds this repo as a local marketplace, installs the Skill Builder plugin, launches the bundled editor, imports a sample project, exports a generated skill, starts that generated skill runtime, and verifies hook ownership isolation.
+`test:e2e:clean-cli` runs in Docker with a clean HOME, installs Claude Code and Codex CLIs, adds this repo as a local marketplace, installs the Skill Builder plugin, verifies the authoring gate, launches the bundled editor after discovery, imports a sample project, exports a generated skill, starts that generated skill runtime, and verifies hook ownership isolation.
 
 Optional Codex marketplace validation:
 

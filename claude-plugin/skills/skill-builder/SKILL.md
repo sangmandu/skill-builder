@@ -6,9 +6,9 @@ trigger: skill builder
 
 # Skill Builder
 
-Skill Builder is a skill that opens a visual and conversational editor for stateful automation skills.
+Skill Builder is a skill that helps author stateful automation skills through a conversational onboarding flow and a bundled visual editor.
 
-Use this skill when the user wants to create, inspect, modify, import, export, or package a skill workflow. This is not a standalone platform or separately hosted app. The user runs the skill; the agent harness reads this skill, runs the bundled launcher, and the launcher opens the local builder UI from this skill's own `app/` directory.
+Use this skill when the user wants to create, inspect, modify, import, export, or package a skill workflow. This is not a standalone platform or separately hosted app. The user runs the skill; the agent harness reads this skill, then you choose the right authoring path with the user. The bundled launcher opens the local builder UI from this skill's own `app/` directory only after the authoring path calls for it.
 
 The builder edits skill packages that contain thin `SKILL.md` entrypoints, step instruction files, helpers, tracks, runtime state schema, generated shell utilities, and target runtime metadata for Claude Code or Codex.
 
@@ -26,7 +26,31 @@ The user can change the skill visually in the builder or by giving natural-langu
 
 ## Agent Responsibilities
 
-When the user asks to open the builder, launch the bundled app. When the user describes a change in chat, edit the skill package files directly and keep the visual model consistent.
+Do not launch the builder UI immediately on skill activation. First route the user through the authoring mode gate unless they explicitly asked to open an existing visual builder session or provided an existing skill package to inspect visually.
+
+When the chosen path reaches the visual editing phase, launch the bundled app. When the user describes a change in chat, edit the skill package files directly and keep the visual model consistent.
+
+## Authoring Mode Gate
+
+On first activation without an explicit visual-open request, ask the user to choose one of three authoring modes and then wait for the answer. Use the user's language.
+
+For Korean users, ask:
+
+```text
+어떤 방식으로 시작할까요?
+
+1. 제가 레포를 분석해서 어떤 일을 주로 하고 반복되는 업무가 무엇일지 예상해서 초안을 작성할까요? (빠르지만 정확도 낮음)
+2. 저랑 핑퐁해서 초안부터 같이 작성해볼까요? (느리지만 정확도 높음)
+3. 직접 만들어보실래요? (바로 시각 빌더 열기)
+```
+
+Mode handling:
+
+- Mode 1: run discovery and inspect the repository before drafting. Create a concrete workflow draft from evidence, then open the visual builder only after the draft is ready to review.
+- Mode 2: do a focused ping-pong interview. Ask short, high-impact questions until the workflow draft is coherent, then open the visual builder only after the draft is ready to review.
+- Mode 3: open the visual builder immediately so the user can build directly.
+
+If the user already chose a mode in the same conversation, continue that mode without asking again. If the user explicitly says "open the builder", "visual", "direct", or provides an existing skill path and asks to inspect it visually, treat that as Mode 3.
 
 ## Runtime Boundary
 
@@ -40,15 +64,17 @@ Skill Builder is an authoring skill. It must not start, install, or trigger work
 
 ## First Run Discovery Guide
 
-When the user runs Skill Builder without an existing skill package or asks what to build, inspect first and ask later. Keep the conversation concrete and short. The goal is to identify one repeatable automation workflow that can become a stateful skill.
+When the user chooses Mode 1 or Mode 2 without an existing skill package, create a draft before opening the visual builder. Keep the conversation concrete and short. The goal is to identify one repeatable automation workflow that can become a stateful skill.
 
-Run the bundled discovery helper from the user's current project root before asking broad questions:
+For Mode 1, run the bundled discovery helper from the user's current project root before drafting:
 
 ```bash
 SKILL_DIR="<directory containing this SKILL.md>"; bash "$SKILL_DIR/scripts/discover-workflow.sh" "$PWD"
 ```
 
-Use the discovered project signals to propose a starter workflow. Include the evidence you used, such as package scripts, source folders, tests, docs, CI files, or repeated project conventions. Ask a question only when the missing answer materially changes the generated workflow.
+Use the discovered project signals to draft a starter workflow. Include the evidence you used, such as package scripts, source folders, tests, docs, CI files, or repeated project conventions. Ask a question only when the missing answer materially changes the generated workflow.
+
+For Mode 2, ask one to three focused questions at a time. Prefer questions about the repeated trigger, the steps that happen every run, where user involvement is required, and what output proves the workflow is done.
 
 If the project looks like ordinary feature work, propose this shape:
 
@@ -64,7 +90,7 @@ Specify -> Plan -> Debate Plan -> Explain Plan -> Setup Test -> Explain Test -> 
 
 If the repository does not contain enough evidence, ask one focused question about the repeated work the user wants to automate. Do not ask a long checklist before offering a proposal.
 
-When creating the first draft, keep it as an authoring action in Skill Builder. Do not start the exported skill runtime, do not initialize `.workflow/state.json`, and do not activate generated hooks.
+When creating the first draft, keep it as an authoring action in Skill Builder. Do not start the exported skill runtime, do not initialize `.workflow/state.json`, and do not activate generated hooks. Open the visual builder after the draft exists, unless the user chose Mode 3.
 
 For conversational edits:
 
@@ -80,7 +106,7 @@ For conversational edits:
 
 This file lives at `<SKILL_DIR>/SKILL.md`. When this skill is activated, note the directory that contains this file and use it as `SKILL_DIR`.
 
-Run the launcher from the user's current working directory. Do not `cd` into the skill directory before choosing the active project root.
+Run the launcher from the user's current working directory only after the authoring mode calls for visual editing. Do not `cd` into the skill directory before choosing the active project root.
 
 ```bash
 SKILL_DIR="<directory containing this SKILL.md>"; bash "$SKILL_DIR/scripts/open-builder.sh" "$PWD"

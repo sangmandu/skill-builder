@@ -77,6 +77,9 @@ test -x "$CLAUDE_SKILL/scripts/open-builder.sh"
 test -x "$CLAUDE_SKILL/scripts/discover-workflow.sh"
 test ! -e "$CLAUDE_SKILL/stop-guard.sh"
 test ! -e "$CLAUDE_SKILL/user-interrupt.sh"
+grep -q "Authoring Mode Gate" "$CLAUDE_SKILL/SKILL.md"
+grep -q "Do not launch the builder UI immediately on skill activation" "$CLAUDE_SKILL/SKILL.md"
+grep -q "open the visual builder only after the draft is ready" "$CLAUDE_SKILL/SKILL.md"
 
 bash "$CLAUDE_SKILL/scripts/discover-workflow.sh" /tmp/sample-code-project > /tmp/discovery.md
 grep -q "code project with repeatable implementation and verification work" /tmp/discovery.md
