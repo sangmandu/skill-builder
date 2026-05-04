@@ -1,7 +1,7 @@
 {
   "name": "skill-builder",
   "version": "0.1.0",
-  "description": "A skill that opens a local visual editor for creating, editing, testing, and exporting stateful automation skills.",
+  "description": "A skill that helps users author stateful automation workflows, asks for a first-run authoring mode before opening its bundled local editor, and exports Claude Code or Codex compatible skills.",
   "author": {
     "name": "sangmandu"
   },
@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Skill Builder",
-    "shortDescription": "Run a skill that edits stateful automation skills visually.",
-    "longDescription": "Skill Builder is not a standalone platform or separately hosted app. It is a skill that contains a bundled local editor. After plugin installation, the agent harness reads the skill, launches that bundled editor, and can also apply natural-language edit requests directly to the skill filesystem. It supports importing existing skills, editing steps and helpers, live filesystem sync, and exporting Claude Code or Codex compatible skill packages.",
+    "shortDescription": "Run a skill that authors stateful automation workflows.",
+    "longDescription": "Skill Builder is not a standalone platform or separately hosted app. It is a skill that contains onboarding instructions and a bundled local editor. On first run, it must ask the user to choose one of three authoring modes before opening the UI: analyze the repo and draft quickly, ping-pong with the user to draft accurately, or open the visual builder directly. For the first two paths, the builder opens only after a draft exists. Skill Builder onboarding must not create .workflow/state.json or activate generated workflow hooks; those belong only to exported skills after their own runtime starts. It supports importing existing skills, editing steps and helpers, live filesystem sync, and exporting Claude Code or Codex compatible skill packages.",
     "developerName": "sangmandu",
     "category": "Coding",
     "capabilities": [
@@ -27,9 +27,9 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Run Skill Builder for this skill package.",
-      "Create a new stateful skill workflow with Skill Builder.",
-      "Import this skill into Skill Builder and inspect its workflow."
+      "Run Skill Builder for this project. First ask whether to analyze the repo, ping-pong on a draft, or open the visual builder directly.",
+      "Create a new stateful skill workflow with Skill Builder. Do not open the visual builder until the selected authoring path calls for it.",
+      "Import this skill into Skill Builder and inspect its workflow visually."
     ],
     "brandColor": "#6D5BD0",
     "screenshots": []

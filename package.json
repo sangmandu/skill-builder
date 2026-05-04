@@ -12,6 +12,8 @@
     "lint": "bash scripts/run-app.sh lint",
     "test:scenarios": "bash scripts/run-app.sh test:scenarios",
     "test:e2e:clean-cli": "bash scripts/e2e-clean-cli.sh",
+    "test:e2e:authoring-modes": "bash scripts/e2e-authoring-modes.sh",
+    "test:e2e:live-agent": "bash scripts/e2e-live-agent.sh",
     "preview": "bash scripts/run-app.sh preview",
     "sync:plugins": "bash scripts/sync-targets.sh",
     "validate:plugins": "bash scripts/validate-dual-targets.sh"

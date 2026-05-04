@@ -122,11 +122,22 @@ npm run lint
 npm run build
 npm run test:scenarios
 npm run test:e2e:clean-cli
+npm run test:e2e:authoring-modes
 npm run sync:plugins
 npm run validate:plugins
 ```
 
 `test:e2e:clean-cli` runs in Docker with a clean HOME, installs Claude Code and Codex CLIs, adds this repo as a local marketplace, installs the Skill Builder plugin, verifies the authoring gate, launches the bundled editor after discovery, imports a sample project, exports a generated skill, starts that generated skill runtime, and verifies hook ownership isolation.
+
+`test:e2e:authoring-modes` runs in Docker with a clean HOME and validates the three first-run authoring paths: repo-analysis draft, ping-pong draft, and direct visual builder. It asserts that Mode 1 and Mode 2 do not open the UI until a draft exists, Mode 3 opens directly, and Skill Builder onboarding never creates generated workflow state or hooks.
+
+Optional model-backed CLI smoke tests:
+
+```bash
+SKILL_BUILDER_E2E_LIVE=1 npm run test:e2e:live-agent
+```
+
+The live smoke uses subscription-backed CLIs, not direct API keys. For Codex, it runs `codex exec` with a clean HOME seeded only with Codex auth. For Claude Code, it first uses `CLAUDE_CODE_OAUTH_TOKEN` when available for a clean HOME subscription run; otherwise it uses the locally logged-in Claude Code subscription with user settings disabled via `--setting-sources project`. It checks that the installed skill contract still routes first-run users through the three authoring modes without opening the UI or creating `.workflow/state.json`.
 
 Optional Codex marketplace validation:
 
@@ -145,6 +156,7 @@ See [DESIGN.md](./plugin-src/skills/skill-builder/app/DESIGN.md) for visual desi
 - Claude Code plugin docs: https://code.claude.com/docs/en/plugins
 - Claude Code marketplace docs: https://code.claude.com/docs/en/discover-plugins
 - Claude Code plugin CLI reference: https://code.claude.com/docs/en/plugins-reference
+- Claude Code authentication docs: https://code.claude.com/docs/en/authentication
 - Claude HUD README pattern: https://github.com/jarrodwatts/claude-hud
 - Awesome README examples: https://github.com/matiassingers/awesome-readme
 - OpenAI plugin examples: https://github.com/openai/plugins

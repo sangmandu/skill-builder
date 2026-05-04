@@ -4,14 +4,14 @@
     "name": "sangmandu"
   },
   "metadata": {
-    "description": "A skill that opens a local visual editor for creating, editing, testing, and exporting stateful automation skills.",
+    "description": "A skill that helps users author stateful automation workflows, asks for a first-run authoring mode before opening its bundled local editor, and exports Claude Code or Codex compatible skills.",
     "version": "0.1.0"
   },
   "plugins": [
     {
       "name": "skill-builder",
       "source": "./claude-plugin",
-      "description": "Claude Code/Codex skill that opens a local editor for stateful skill workflows.",
+      "description": "Claude Code/Codex authoring skill with repo-analysis, ping-pong, and direct visual builder first-run modes.",
       "category": "productivity",
       "tags": [
         "skill-builder",

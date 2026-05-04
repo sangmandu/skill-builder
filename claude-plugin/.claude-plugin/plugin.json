@@ -1,6 +1,6 @@
 {
   "name": "skill-builder",
-  "description": "A skill that opens a local visual editor for creating, editing, testing, and exporting stateful automation skills.",
+  "description": "A skill that helps users author stateful automation workflows, asks for a first-run authoring mode before opening its bundled local editor, and exports Claude Code or Codex compatible skills.",
   "version": "0.1.0",
   "author": {
     "name": "sangmandu"

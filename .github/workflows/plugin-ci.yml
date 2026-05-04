@@ -28,3 +28,11 @@ jobs:
         with:
           node-version: 22
       - run: npm run test:e2e:clean-cli
+  authoring-modes-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - run: npm run test:e2e:authoring-modes
