@@ -47,7 +47,7 @@ scripts/sync-targets.sh    # regenerate plugin bundles from source
 scripts/validate-dual-targets.sh
 ```
 
-The duplicated target bundles are intentional. `plugin-src/` and the app source are the source of truth; `npm run sync:plugins` copies them into each runtime-specific bundle.
+The duplicated target bundles are intentional and committed so `plugin marketplace add` can install directly from the repository. `plugin-src/` and the app source are the source of truth; `npm run sync:plugins` copies them into each runtime-specific bundle.
 
 ## Claude Code Plugin
 
